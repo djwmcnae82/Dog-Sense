@@ -45,8 +45,6 @@ class DogTempSensor(object):
 		bootup_msg = bootup_msg + "Reply: \n`disable` to stop alerts\n"
 		bootup_msg = bootup_msg + "`limit=` to set upper limit alerts\n"
 		bootup_msg = bootup_msg + "`floor=` to set lower floor alerts\n"
-		bootup_msg = bootup_msg + "Version: 3.0"
-
 		self.SendTextMessage(bootup_msg)
 
 		# Store resin environment variable as a class variable
