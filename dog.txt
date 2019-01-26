@@ -1,0 +1,10 @@
+git remote add balena djwmcnae82@git.balena-cloud.com:djwmcnae82/dog-sense.git
+
+git remote add balena djwmcnae82@git.balena-cloud.com:djwmcnae82/Dog-Sense.git
+
+$ git clone https://github.com/djwmcnae82/Dog-Sense.git
+
+
+ssh-keygen -t rsa -b 4096 -C "djwmcnae82@gmail.com"
+
+Mulb3rry

@@ -10,6 +10,9 @@ import MyPyDHT
 import os
 import threading
 
+import importlib.util
+import RPi.GPIO as GPIO
+
 from flask import Flask
 from flask import send_file 
 from flask import render_template
@@ -22,6 +25,13 @@ import schedule
 
 class DogTempSensor(object):
 	def __init__(self):
+		# Create a counter and a last bark time
+		self.barkCount = 0
+		self.lastBarkCountCheck = 0
+		self.last_bark_time = None
+		self.ch = 16
+
+		# Pin that the temp sensor is connected to
 		self.dht22_bcm = 17
 
 		# Set this to true in order to text every minute an alert!
@@ -68,6 +78,10 @@ class DogTempSensor(object):
 		t2.setDaemon(True)
 		t2.start()
 		print("Scheduler")
+
+		GPIO.add_event_detect(ch, GPIO.BOTH, bouncetime=800)
+		GPIO.add_event_callback(ch, barkCallback)
+		print("Start monitoring the bark")
 
 		sleep(15)
 		self.SendInfoMessage()
@@ -126,8 +140,9 @@ class DogTempSensor(object):
 			# elif os.environ["ALERT_LOCAL"] == "F":
 			# 	f_or_c = 1
 
-
-
+		if self.lastBarkCountCheck != self.barkCount:
+			self.lastBarkCountCheck = self.barkCount
+			self.alert = True
 
 	# Send current state over text message
 	def SendInfoMessage(self):
@@ -135,7 +150,7 @@ class DogTempSensor(object):
 		current_time = datetime.strftime(datetime.now(),"%I:%M:%S %p")
 		# print(current_time)
 
-		msg_text = "Still Monitoring! " + current_time		
+		msg_text = "Still Monitoring temp and sounds! " + current_time		
 
 
 		if self.alert == True:
@@ -148,6 +163,7 @@ class DogTempSensor(object):
 		if self.floor != None:
 			msg_text = msg_text + "\nCurrent Floor " + str(self.floor) + "C"
 	
+		msg_text = msg_text + "\nLast Bark Time: " + str(self.last_bark_time)
 
 		msg_text = msg_text + "\nThreads: " + str(threading.active_count() )
 		
@@ -259,7 +275,15 @@ class DogTempSensor(object):
 				retry = retry + 1
 				sleep(0.5)
 
-		return (-1,-1,-1)		
+		return (-1,-1,-1)	
+
+	# Call back routine for the sound sensor
+	def barkCallback(ch):
+		self.barkCount += 1
+		print('heard a sound!')
+		self.last_bark_time = datetime.now()
+		#send_push(last_bark_time.replace(microsecond=0), count)
+	
 
 
 if __name__ == '__main__':
