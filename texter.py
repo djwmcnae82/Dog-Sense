@@ -10,8 +10,8 @@ import MyPyDHT
 import os
 import threading
 
-import importlib.util
-import RPi.GPIO as GPIO
+#import importlib.util
+#import RPi.GPIO as GPIO
 
 from flask import Flask
 from flask import send_file 
@@ -79,9 +79,9 @@ class DogTempSensor(object):
 		t2.start()
 		print("Scheduler")
 
-		GPIO.add_event_detect(ch, GPIO.BOTH, bouncetime=800)
-		GPIO.add_event_callback(ch, barkCallback)
-		print("Start monitoring the bark")
+		#GPIO.add_event_detect(ch, GPIO.BOTH, bouncetime=800)
+		#GPIO.add_event_callback(ch, barkCallback)
+		#print("Start monitoring the bark")
 
 		sleep(15)
 		self.SendInfoMessage()
